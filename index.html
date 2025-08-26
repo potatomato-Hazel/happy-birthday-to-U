@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>生日快乐 🎂</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(to top right, #ff9a9e, #fad0c4);
+      overflow: hidden;
+      font-family: 'Microsoft Yahei', sans-serif;
+      position: relative;
+    }
+
+    h1, h2 {
+      font-size: 3em;
+      color: #fff;
+      text-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+      z-index: 10;
+      animation: fadeIn 3s ease-in-out;
+      margin: 0;
+      text-align: center;
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .balloon {
+      position: absolute;
+      bottom: -150px;
+      width: 60px;
+      height: 80px;
+      background: red;
+      border-radius: 50% 50% 50% 50%;
+      opacity: 0.7;
+      animation: floatUp 10s infinite ease-in;
+    }
+
+    .balloon::after {
+      content: '';
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      height: 20px;
+      background: #fff;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0) scale(1); opacity: 0.8; }
+      100% { transform: translateY(-110vh) scale(1.2); opacity: 0; }
+    }
+
+    /* 星星效果 */
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+      border-radius: 50%;
+      opacity: 0.8;
+      animation: twinkle 2s infinite ease-in-out;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    /* 烟花粒子 */
+    .firework {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: yellow;
+      border-radius: 50%;
+      opacity: 0;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎉 一凡 🎉</h1>
+  <h2>🎂 生日快乐 🎂</h2>
+
+  <!-- 背景音乐 -->
+  <audio id="bg-music" src="music.mp3" autoplay loop hidden></audio>
+
+  <script>
+    function randomColor() {
+      const colors = ["#ff6b6b", "#feca57", "#48dbfb", "#1dd1a1", "#5f27cd", "#ffdd59", "#ff4757"];
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    // 气球
+    function createBalloon() {
+      const balloon = document.createElement("div");
+      balloon.classList.add("balloon");
+      balloon.style.left = Math.random() * window.innerWidth + "px";
+      balloon.style.background = randomColor();
+      balloon.style.animationDuration = 5 + Math.random() * 5 + "s";
+      document.body.appendChild(balloon);
+
+      setTimeout(() => {
+        balloon.remove();
+      }, 10000);
+    }
+    setInterval(createBalloon, 500);
+
+    // 星星
+    function createStars() {
+      for (let i = 0; i < 50; i++) {
+        const star = document.createElement("div");
+        star.classList.add("star");
+        star.style.left = Math.random() * window.innerWidth + "px";
+        star.style.top = Math.random() * window.innerHeight + "px";
+        star.style.animationDuration = 1 + Math.random() * 2 + "s";
+        document.body.appendChild(star);
+      }
+    }
+    createStars();
+
+    // 烟花
+    function createFirework(x, y) {
+      const count = 30;
+      for (let i = 0; i < count; i++) {
+        const particle = document.createElement("div");
+        particle.classList.add("firework");
+        document.body.appendChild(particle);
+
+        const angle = (Math.PI * 2 * i) / count;
+        const radius = Math.random() * 100 + 50;
+        const dx = Math.cos(angle) * radius;
+        const dy = Math.sin(angle) * radius;
+
+        particle.style.left = x + "px";
+        particle.style.top = y + "px";
+        particle.style.background = randomColor();
+
+        setTimeout(() => {
+          particle.style.transition = "all 1s ease-out";
+          particle.style.transform = `translate(${dx}px, ${dy}px)`;
+          particle.style.opacity = 1;
+        }, 50);
+
+        setTimeout(() => {
+          particle.style.opacity = 0;
+        }, 1000);
+
+        setTimeout(() => {
+          particle.remove();
+        }, 2000);
+      }
+    }
+
+    // 自动定时烟花
+    setInterval(() => {
+      const x = Math.random() * window.innerWidth;
+      const y = Math.random() * (window.innerHeight / 2);
+      createFirework(x, y);
+    }, 3000);
+
+    // 点击页面触发烟花
+    document.addEventListener("click", (e) => {
+      createFirework(e.clientX, e.clientY);
+    });
+  </script>
+</body>
+</html>
